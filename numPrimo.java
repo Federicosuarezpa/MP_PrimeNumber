@@ -73,13 +73,15 @@ public class numPrimo {
 
 			if(maxValue.isItsBig())
 			{
+				//myFile.write(Long.toString(maxValue.getMaxValue())+"\t");
+				//myFile.write(Long.toString(maxValue.highestPrimeLongInverse())+"\t");
 				myFile.write(maxValue.getBigNumber().toString() + "\t");
 				myFile.write(maxValue.highestPrimeBig().toString()+ "\t");
 			}
 			else
 			{
 				myFile.write(Long.toString(maxValue.getMaxValue())+"\t");
-				myFile.write(Long.toString(maxValue.highestPrimeLong2())+"\t");
+				myFile.write(Long.toString(maxValue.highestPrimeLongInverse())+"\t");
 			}
 			fin = System.currentTimeMillis();
 

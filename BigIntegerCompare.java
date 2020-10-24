@@ -1,7 +1,6 @@
 package numPrimero;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 
 public class BigIntegerCompare {
 
@@ -17,7 +16,7 @@ public class BigIntegerCompare {
 	{
 		bigNumber = new BigInteger(numero);
 		itsBig = true;
-		if(BigInteger.valueOf(Long.MAX_VALUE).compareTo(bigNumber) > 0 ) 
+		if(BigInteger.valueOf(Long.MAX_VALUE).compareTo(bigNumber) >= 0 ) 
 		{
 			maxValue = bigNumber.longValue();
 			itsBig = false;
@@ -31,7 +30,7 @@ public class BigIntegerCompare {
 	public long highestPrimeLong()
 	{
 		long prime = 1;
-		for(long i = 1; i < maxValue; i ++)
+		for(long i = 1; i <= maxValue; i ++)
 		{
 			if(isPrime(i) && i > prime)
 			{
@@ -48,14 +47,28 @@ public class BigIntegerCompare {
 	{
 		long prime = 1;
 		int k = 2;
-		for(long i = 1; i < maxValue; i++) 
+		for(long i = 1; i <= maxValue; i++) 
 		{
 			if(isPrime2(i,k) && i > prime)
 			{
+				System.out.println(i);
 				prime = i;
 			}
 		}
 		return prime;
+	}
+	public long highestPrimeLongInverse()
+	{
+		int k = 2;
+		for(long i = this.maxValue; i >= 0; i-- )
+		{
+			System.out.println(i);
+			if(isPrime(i))
+			{
+				return i;
+			}
+		}
+		return 0;
 	}
 
 	/**
@@ -67,10 +80,12 @@ public class BigIntegerCompare {
 		if(n < 2) return false;
 
 		if(n == 2 || n == 3) return true;
+		
+		if(n % 2 == 0) return false;
 
-		double maxValue = Math.sqrt(n)+1;
+		double maxValue = Math.sqrt(n);
 
-		for(long i = 3; i  <= maxValue; i += 2) 
+		for(long i = 3; i  <= maxValue; i += 1) 
 		{
 			if(n % i == 0) return false;
 		}
@@ -105,6 +120,7 @@ public class BigIntegerCompare {
 
 		return true; 
 	} 
+	
 	/**
 	 * 
 	 * @param number
@@ -113,8 +129,16 @@ public class BigIntegerCompare {
 	private static boolean isPrimeBig(BigInteger number)
 	{
 
-		for(BigInteger i = new BigInteger("2"); i.pow(2).compareTo(number) < 0 ; i = i.add(BigInteger.ONE))
+		System.out.println("Hola");
+		BigInteger pruebas = new BigInteger("3");
+		if(number.mod(BigInteger.TWO).compareTo(BigInteger.ZERO) == 0) return false;
+		if(number.mod(pruebas).compareTo(BigInteger.ZERO) == 0) return false;
+		pruebas = pruebas.add(BigInteger.TWO);
+		if(number.mod(pruebas).compareTo(BigInteger.ZERO) == 0) return false;
+		
+		for(BigInteger i = new BigInteger("6"); i.pow(2).compareTo(number) < 0 ; i = i.add(BigInteger.ONE))
 		{
+			System.out.println(i);
 			if(number.mod(i).compareTo(BigInteger.ZERO) == 0)
 			{
 				return false;
@@ -128,18 +152,16 @@ public class BigIntegerCompare {
 	 */
 	public BigInteger highestPrimeBig()
 	{
-		BigInteger i = new BigInteger(Long.toString(this.highestPrimeLong2()));
-		BigInteger prime = new BigInteger(i.toString());
-
-		for(; i.pow(2).compareTo(bigNumber) < 0 ; i.add(BigInteger.ONE))
+		BigInteger i = new BigInteger("1");
+		for(i =  new BigInteger(this.bigNumber.toString()); i.compareTo(BigInteger.ZERO) > 0 ; i = i.subtract(BigInteger.ONE))
 		{
 			if(isPrimeBig(i))
 			{
-				prime = i;
+				return i;
 			}
-			i = i.nextProbablePrime();
+			System.out.println(i+"a");
 		}
-		return prime;
+		return i;
 	}
 	/**
 	 * 
