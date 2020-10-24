@@ -1,6 +1,7 @@
 package numPrimero;
 
 import java.math.BigInteger;
+import java.util.Random;
 
 public class BigIntegerCompare {
 
@@ -62,7 +63,6 @@ public class BigIntegerCompare {
 		int k = 2;
 		for(long i = this.maxValue; i >= 0; i-- )
 		{
-			System.out.println(i);
 			if(isPrime(i))
 			{
 				return i;
@@ -127,23 +127,85 @@ public class BigIntegerCompare {
 	 * @return
 	 */
 
-	public boolean returnPrime(BigInteger number) {
-	    //check via BigInteger.isProbablePrime(certainty)
-	    if (!number.isProbablePrime(5))
-	        return false;
-
-	    //check if even
-	    BigInteger two = new BigInteger("2");
-	    if (!two.equals(number) && BigInteger.ZERO.equals(number.mod(two)))
-	        return false;
-
-	    //find divisor if any from 3 to 'number'
-	    for (BigInteger i = new BigInteger("3"); i.pow(2).compareTo(number) < 0; i = i.add(two)) { //start from 3, 5, etc. the odd number, and look for a divisor if any
-	        if (BigInteger.ZERO.equals(number.mod(i))) //check if 'i' is divisor of 'number'
-	            return false;
-	        System.out.println(i);
-	    }
-	    return true;
+	public static boolean FermatTest(BigInteger n, Random r) {
+		
+		// Ensures that temp > 1 and temp < n.
+		BigInteger temp = BigInteger.ZERO;
+		do {
+			temp = new BigInteger(n.bitLength()-1, r);
+		} while (temp.compareTo(BigInteger.ONE) <= 0);
+		
+		// Just calculate temp^*(n-1) mod n
+		BigInteger ans = temp.modPow(n.subtract(BigInteger.ONE), n);
+		
+		// Return true iff it passes the Fermat Test!
+		return (ans.equals(BigInteger.ONE));
+	}
+	
+	private static boolean MyMillerRabin(BigInteger n, Random r) {
+		
+		// Ensures that temp > 1 and temp < n.
+		BigInteger temp = BigInteger.ZERO;
+		do {
+			temp = new BigInteger(n.bitLength()-1, r);
+		} while (temp.compareTo(BigInteger.ONE) <= 0);
+		
+		// Screen out n if our random number happens to share a factor with n.
+		if (!n.gcd(temp).equals(BigInteger.ONE)) return false;
+		
+		// For debugging, prints out the integer to test with.
+		//System.out.println("Testing with " + temp);
+		
+		BigInteger base = n.subtract(BigInteger.ONE);
+		BigInteger TWO = new BigInteger("2");
+		
+		// Figure out the largest power of two that divides evenly into n-1.
+		int k=0;
+		while ( (base.mod(TWO)).equals(BigInteger.ZERO)) {
+			base = base.divide(TWO);
+			k++;
+		}
+		
+		// This is the odd value r, as described in our text.
+		//System.out.println("base is " + base);
+		
+		BigInteger curValue = temp.modPow(base,n);
+		
+		// If this works out, we just say it's prime.
+		if (curValue.equals(BigInteger.ONE))
+			return true;
+			
+		// Otherwise, we will check to see if this value successively 
+		// squared ever yields -1.
+		for (int i=0; i<k; i++) {
+			
+			// We need to really check n-1 which is equivalent to -1.
+			if (curValue.equals(n.subtract(BigInteger.ONE)))
+				return true;
+				
+			// Square this previous number - here I am just doubling the 
+			// exponent. A more efficient implementation would store the
+			// value of the exponentiation and square it mod n.
+			else
+				curValue = curValue.modPow(TWO, n);
+		}
+		
+		// If none of our tests pass, we return false. The number is 
+		// definitively composite if we ever get here.
+		return false;
+	}
+	
+	public static boolean MillerRabin(BigInteger n, int numTimes) {
+		
+		Random r = new Random();
+		
+		// Run Miller-Rabin numTimes number of times.
+		for (int i=0; i<numTimes; i++) 
+			if (!MyMillerRabin(n,r)) return false;
+			
+		// If we get here, we assume n is prime. This will be incorrect with
+		// a probability no greater than 1/4^numTimes.
+		return true;
 	}
 	/**
 	 * 
@@ -154,11 +216,10 @@ public class BigIntegerCompare {
 		BigInteger i = new BigInteger("1");
 		for(i =  new BigInteger(this.bigNumber.toString()); i.compareTo(BigInteger.ZERO) > 0 ; i = i.subtract(BigInteger.ONE))
 		{
-			if(returnPrime(i))
+			if(MillerRabin(i,50))
 			{
 				return i;
 			}
-			System.out.println(i+"a");
 		}
 		return i;
 	}

@@ -11,7 +11,7 @@ public class numPrimo {
 
 	static Scanner input=new Scanner(System.in);
 	private static String ficheroProductos = "pruebas.txt";
-	static final int numLineas = 5;
+	static final int numLineas = 0;
 
 	public static String[] leerArchivo(int numLineas) throws IOException
 	{
@@ -60,7 +60,7 @@ public class numPrimo {
 		myFile.write("\n");
 
 
-		for(int i = 0; i < numLineas; i++)
+		for(int i = 0; i < numeros.length; i++)
 		{
 
 			tiempo = 0;
