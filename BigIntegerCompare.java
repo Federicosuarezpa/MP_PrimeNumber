@@ -126,25 +126,24 @@ public class BigIntegerCompare {
 	 * @param number
 	 * @return
 	 */
-	private static boolean isPrimeBig(BigInteger number)
-	{
 
-		System.out.println("Hola");
-		BigInteger pruebas = new BigInteger("3");
-		if(number.mod(BigInteger.TWO).compareTo(BigInteger.ZERO) == 0) return false;
-		if(number.mod(pruebas).compareTo(BigInteger.ZERO) == 0) return false;
-		pruebas = pruebas.add(BigInteger.TWO);
-		if(number.mod(pruebas).compareTo(BigInteger.ZERO) == 0) return false;
-		
-		for(BigInteger i = new BigInteger("6"); i.pow(2).compareTo(number) < 0 ; i = i.add(BigInteger.ONE))
-		{
-			System.out.println(i);
-			if(number.mod(i).compareTo(BigInteger.ZERO) == 0)
-			{
-				return false;
-			}
-		}
-		return true;
+	public boolean returnPrime(BigInteger number) {
+	    //check via BigInteger.isProbablePrime(certainty)
+	    if (!number.isProbablePrime(5))
+	        return false;
+
+	    //check if even
+	    BigInteger two = new BigInteger("2");
+	    if (!two.equals(number) && BigInteger.ZERO.equals(number.mod(two)))
+	        return false;
+
+	    //find divisor if any from 3 to 'number'
+	    for (BigInteger i = new BigInteger("3"); i.pow(2).compareTo(number) < 0; i = i.add(two)) { //start from 3, 5, etc. the odd number, and look for a divisor if any
+	        if (BigInteger.ZERO.equals(number.mod(i))) //check if 'i' is divisor of 'number'
+	            return false;
+	        System.out.println(i);
+	    }
+	    return true;
 	}
 	/**
 	 * 
@@ -155,7 +154,7 @@ public class BigIntegerCompare {
 		BigInteger i = new BigInteger("1");
 		for(i =  new BigInteger(this.bigNumber.toString()); i.compareTo(BigInteger.ZERO) > 0 ; i = i.subtract(BigInteger.ONE))
 		{
-			if(isPrimeBig(i))
+			if(returnPrime(i))
 			{
 				return i;
 			}
