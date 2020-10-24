@@ -1,8 +1,9 @@
 package numPrimero;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Scanner;
@@ -10,9 +11,9 @@ import java.util.Scanner;
 public class main {
 
 	static Scanner input=new Scanner(System.in);
-	private static String ficheroProductos = "1234.txt";
-	static final int numLineas = 10;
-	
+	private static String ficheroProductos = "pruebas.txt";
+	static final int numLineas = 5;
+
 	public static String[] leerArchivo(int numLineas) throws IOException
 	{
 		BufferedReader br = new BufferedReader(new FileReader(ficheroProductos));
@@ -27,40 +28,70 @@ public class main {
 			numLineas = (int) br.lines().count();
 			numLista = new String [numLineas];
 		}
+
 		br.close();
+
 		br = new BufferedReader(new FileReader(ficheroProductos));
+
 		for(int i = 0; i < numLineas; i++)
 		{
 			numLista[i] = br.readLine();
 		}
-		for(int i = 0; i < numLineas; i++)
-		{
-			System.out.println(numLista[i]);
-		}
+
 		br.close();
 		return numLista;
 	}
 	public static void main(String[] args) throws IOException 
 	{
-		
+
 		String[] numeros = new String[numLineas];
-		
+		double[] timers = new double[numLineas];
+		long inicio,fin;
+		double tiempo;
+
 		numeros = leerArchivo(numLineas);
+
+		BigInteger numero = null;
+
+		BigIntegerCompare maxValue;
 		
-		BigInteger a = null;
 		
-		a = (new BigInteger(numeros[0]));
-		System.out.println(Long.MAX_VALUE);
+		FileWriter myFile = new FileWriter("Resultados.txt");
 		
-		BigIntegerCompare x = new BigIntegerCompare("21");
-		if(x.isItsBig())
+		myFile.write("P \tn < p\t tiempo");
+		myFile.write("\n");
+
+
+		for(int i = 0; i < numLineas; i++)
 		{
-			System.out.println(x.highestPrimeBig());
+
+			tiempo = 0;
+
+			numero = new BigInteger(numeros[i]);
+
+			maxValue = new BigIntegerCompare(numero.toString());
+
+			inicio = System.currentTimeMillis();
+
+			if(maxValue.isItsBig())
+			{
+				myFile.write(maxValue.getBigNumber().toString() + "\t");
+				myFile.write(maxValue.highestPrimeBig().toString()+ "\t");
+			}
+			else
+			{
+				myFile.write(Long.toString(maxValue.getMaxValue())+"\t");
+				myFile.write(Long.toString(maxValue.highestPrimeLong2())+"\t");
+			}
+			fin = System.currentTimeMillis();
+
+			tiempo = (double) ((fin - inicio))/1000;
+			
+			myFile.write(Double.toString(tiempo)+" segundos");
+			myFile.write("\n");
 		}
-		else
-		{
-			System.out.println(x.highestPrimeLong2());
-		}
+		myFile.close();
+		
 	}
 
 }
